@@ -19,6 +19,8 @@ TEST_TOOL_BUILD_OUTPUT="build/bin/${TEST_TOOL_NAME}"
 export GOPATH=${PWD}/build
 
 rm -f $GOPATH/src/${LIBRARY_PATH}
+rm -fr $GOPATH/src/${TEST_TOOL_PATH}
+
 mkdir -p $GOPATH/src/${ACCOUNT_PATH}
 ln -s ${PWD} $GOPATH/src/${LIBRARY_PATH}
 cp -rp ${TEST_TOOL_NAME} $GOPATH/src/${TEST_TOOL_PATH}
