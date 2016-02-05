@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# This project can be imported directly by other projects, but, in order for us 
+# to build the test-tool when developing locally, we need to construct a 
+# workspace on the fly. Because we symlink our library project into the 
+# workspace using the fully-qualified Github path, we won't won't compromise 
+# basic "go get" conventions but won't need to rewrite from some other local 
+# import path to the one we wish to publish.
+
+ACCOUNT_PATH="github.com/dsoprea"
+
+LIBRARY_NAME="go-exiftool"
+LIBRARY_PATH="${ACCOUNT_PATH}/${LIBRARY_NAME}"
+
+TEST_TOOL_NAME="exiftooltest"
+TEST_TOOL_PATH="${ACCOUNT_PATH}/${TEST_TOOL_NAME}"
+TEST_TOOL_BUILD_OUTPUT="build/bin/${TEST_TOOL_NAME}"
+
+export GOPATH=${PWD}/build
+
+rm -f $GOPATH/src/${LIBRARY_PATH}
+mkdir -p $GOPATH/src/${ACCOUNT_PATH}
+ln -s ${PWD} $GOPATH/src/${LIBRARY_PATH}
+cp -rp ${TEST_TOOL_NAME} $GOPATH/src/${TEST_TOOL_PATH}
+
+go get ${TEST_TOOL_PATH}
+if [ $? -ne 0 ]; then
+    echo "Get failed."
+    exit 1
+fi
+
+go build -o ${TEST_TOOL_BUILD_OUTPUT} ${TEST_TOOL_PATH}
